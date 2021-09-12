@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QVector>
 #include <QTimer>
+#include <QElapsedTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -31,5 +32,6 @@ private:
     QVector <double> x, y;
     QTimer *timer;
     int time;
+    QElapsedTimer *my_timer;
 };
 #endif // MAINWINDOW_H

@@ -7,29 +7,25 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     ui->widget->addGraph();
-    ui->widget->graph(0)->setPen(QPen(QColor(40, 110, 255)));
-    //ui->widget->graph(0)->setAntialiasedFill(false);
+    ui->widget->graph(0)->setPen(QPen(QColor(40, 110, 255),2));
+    ui->widget->graph(0)->setAntialiasedFill(false);
 
-   ui->widget->xAxis->setLabel("Time(s)");
+
+    ui->widget->yAxis->setRange(-1.5, 1.5);
+
    ui->widget->yAxis->setLabel("Value");
 
 
-   /* Make top and right axis visible, but without ticks and label */
+/* Make top and right axis visible, but without ticks and label */
    ui->widget->xAxis->setVisible(false);
    ui->widget->yAxis->setVisible(true);
    ui->widget->xAxis->setTicks(false);
-   ui->widget->yAxis->setTicks(false);
+   ui->widget->yAxis->setTicks(true);
    ui->widget->xAxis->setTickLabels(false);
    ui->widget->yAxis->setTickLabels(true);
 
-   // make left and bottom axes transfer their ranges to right and top axes:
-   connect(ui->widget->xAxis, SIGNAL(rangeChanged(QCPRange)), ui->widget->xAxis2, SLOT(setRange(QCPRange)));
-   connect(ui->widget->yAxis, SIGNAL(rangeChanged(QCPRange)), ui->widget->yAxis2, SLOT(setRange(QCPRange)));
-   /* Set up and initialize the graph plotting timer */
-   connect(&timer_plot, SIGNAL(timeout()),this,SLOT(realtimePlot()));
-   timer_plot.start(0);
+
 
 
 }
@@ -42,33 +38,31 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    timer = new QTimer(this);
-
-    connect(timer, SIGNAL(timeout()), this, SLOT(TimerSlot()));
-    ui->widget->clearGraphs();
-    timer->start(20);
-    X = xBegin;
-    x.clear();
-    y.clear();
+    my_timer->start();
+    /* Set up and initialize the graph plotting timer */
+    connect(&timer_plot, SIGNAL(timeout()),this,SLOT(realtimePlot()));
+    timer_plot.start(60);
 }
 
 void MainWindow::realtimePlot()
 {
-    static QTime time(QTime::currentTime());
-    double key = time.msecsSinceStartOfDay()/1000.0;
+
+
+    double key = my_timer->elapsed() / 1000.0;
     static double lastPointKey = 0;
     if(key - lastPointKey > 0.002)
     {
-        ui->widget->graph(0)->addData(key, 0.5);
+        ui->widget->graph(0)->addData(key, sin(key)); // добавляет точку
+        //ui->widget->graph(0)->rescaleValueAxis();
+
 
         lastPointKey = key;
     }
 
     /* make key axis range scroll right with the data at a constant range of 8. */
 
-    ui->widget->graph(0)->rescaleValueAxis();
-    ui->widget->xAxis->setRange(key, 4, Qt::AlignRight);
-    ui->widget->replot();
+    ui->widget->xAxis->setRange(key, 8, Qt::AlignRight);
+    ui->widget->replot(); //строит
 }
 
 void MainWindow::TimerSlot()
