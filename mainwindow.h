@@ -20,12 +20,14 @@ public:
 private slots:
     void on_pushButton_2_clicked();
     void TimerSlot();
-
+public slots:
+    void realtimePlot();
 private:
     Ui::MainWindow *ui;
     double xBegin, xEnd, h, X;
     int N;
-
+    unsigned long adc_data_g;
+    QTimer timer_plot;
     QVector <double> x, y;
     QTimer *timer;
     int time;
