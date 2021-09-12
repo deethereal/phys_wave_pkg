@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Тут будет график</string>
+     <string>Тут есть график</string>
     </property>
    </widget>
    <widget class="QPushButton" name="pushButton">
@@ -77,7 +77,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Пауза</string>
+     <string>Антипауза</string>
     </property>
    </widget>
    <widget class="QCustomPlot" name="widget" native="true">
@@ -85,7 +85,7 @@
      <rect>
       <x>30</x>
       <y>60</y>
-      <width>561</width>
+      <width>571</width>
       <height>271</height>
      </rect>
     </property>
@@ -97,7 +97,7 @@
      <x>0</x>
      <y>0</y>
      <width>866</width>
-     <height>30</height>
+     <height>24</height>
     </rect>
    </property>
   </widget>
