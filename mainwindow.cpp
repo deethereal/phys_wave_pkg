@@ -2,6 +2,9 @@
 #include "ui_mainwindow.h"
 #include<QFont>
 
+QVector<wave> waves;
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -10,9 +13,11 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(40, 110, 255),2));
     ui->widget->graph(0)->setAntialiasedFill(false);
-
-
-    ui->widget->yAxis->setRange(-1.5, 1.5);
+    wave test_wave = wave(2, 0.5, 0);
+    wave new_wave = wave(0.5, 10,0);
+    waves.push_back(test_wave);
+    waves.push_back(new_wave);
+    //ui->widget->yAxis->setRange(-1.5, 1.5);
 
    ui->widget->yAxis->setLabel("Value");
 
@@ -48,18 +53,18 @@ void MainWindow::realtimePlot()
     static double lastPointKey = 0;
     if(key - lastPointKey > 0.002)
     {
-        ui->widget->graph(0)->addData(key, sin(key)); // добавляет точку
-        //ui->widget->graph(0)->rescaleValueAxis();
+        ui->widget->graph(0)->addData(key, wave_pkg(key)); // добавляет точку
+        ui->widget->graph(0)->rescaleValueAxis();
 
         lastPointKey = key;
     }
 
     /* make key axis range scroll right with the data at a constant range of 8. */
-    ui->widget->xAxis->setRange(key, 8, Qt::AlignRight);
+    ui->widget->xAxis->setRange(key, 20, Qt::AlignRight);
     ui->widget->replot(); //строит
 }
 
-double MainWindow::wave_pkg(double x, QVector<wave> waves)
+double MainWindow::wave_pkg(double x)
 {
     double amp, frq, phs;
     double result;
@@ -73,23 +78,6 @@ double MainWindow::wave_pkg(double x, QVector<wave> waves)
     }
     return result;
 }
-
-void MainWindow::TimerSlot()
-{
-    if (time <= 20*N) {
-        if (X <= xEnd) {
-            x.push_back(X);
-            y.push_back(sin(X));
-            X += h;
-        }
-        time += 20;
-    }
-    else {
-        time = 0;
-        timer->stop();
-    }
-}
-
 
 void MainWindow::on_pushButton_clicked()
 {

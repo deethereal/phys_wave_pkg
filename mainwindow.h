@@ -21,7 +21,6 @@ public:
 
 private slots:
     void on_pushButton_2_clicked();
-    void TimerSlot();
     void realtimePlot();
 
     void on_pushButton_clicked();
@@ -41,6 +40,6 @@ private:
     QElapsedTimer *my_timer;
 
 private:
-    double wave_pkg(double x, QVector <wave> waves);
+    double wave_pkg(double x);
 };
 #endif // MAINWINDOW_H
