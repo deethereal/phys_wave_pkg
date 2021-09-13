@@ -45,5 +45,6 @@ private:
 
 private:
     double wave_pkg(double x, double t);
+    double true_wave_pkg(double x, double t);
 };
 #endif // MAINWINDOW_H
