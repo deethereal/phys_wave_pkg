@@ -8,16 +8,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->widget->addGraph();
-    ui->widget->graph(0)->setPen(QPen(QColor(255, 0, 0), 4));
+    ui->widget->graph(0)->setPen(QPen(QColor(0, 0, 0), 4));
     ui->widget->addGraph();
     ui->widget->graph(0)->setAntialiasedFill(false);
-    ui->widget->graph(1)->setPen(QPen(QColor(0, 255, 0), 2));
+    ui->widget->graph(1)->setPen(QPen(QColor(0, 191, 255), 2));
     ui->widget->graph(1)->setAntialiasedFill(false);
+
     double A =1;
-    double k1=4;
-    double k2= 2.99999;
-    double dw=0.00001;
-    double w = 40000*dw*k1/(k1-k2);
+    double k1=10;
+    double k2= 9;
+    double dw=0.001;
+    double w = 8;//*dw*k1/(k1-k2);
 
     wave test_wave_1 = wave(A, w, 0 , k1);
     wave test_wave_2 = wave(A, w+dw, 0, k2);
@@ -47,7 +48,6 @@ MainWindow::MainWindow(QWidget *parent)
     for (int i=1; i<=20/h; i++)
     {
         x.push_back(i*h);
-        //printf("%f\n", x[i]);
     }
 }
 
@@ -59,7 +59,6 @@ MainWindow::~MainWindow()
 void MainWindow::on_pushButton_2_clicked()
 {
     my_timer->start();
-
     /* Set up and initialize the graph plotting timer */
     connect(&timer_plot, SIGNAL(timeout()), this, SLOT(realtimePlot()));
     timer_plot.start(30);
@@ -69,25 +68,21 @@ void MainWindow::realtimePlot()
 {
     ui->widget->graph(0)->data()->clear();
     ui->widget->graph(1)->data()->clear();
+
     double key = my_timer->elapsed() / 1000.0;
     static double lastPointKey = 0;
-    if(key - lastPointKey > 0.02)
+
+    if(key - lastPointKey > 0.002)
     {
         for (auto& iter : x) {
             ui->widget->graph(0)->addData(iter, wave_pkg(iter, key));
             ui->widget->graph(1)->addData(iter, true_wave_pkg(iter, key));
-
-            //printf("%d\n", iter);
         }
-
         //ui->widget->graph(0)->rescaleValueAxis();
-
         lastPointKey = key;
     }
-
-    /* make key axis range scroll right with the data at a constant range of 8. */
     //ui->widget->xAxis->setRange(key, 20, Qt::AlignRight);
-    ui->widget->replot(); //строит
+    ui->widget->replot();
 }
 
 double MainWindow::wave_pkg(double X, double T)
@@ -95,6 +90,7 @@ double MainWindow::wave_pkg(double X, double T)
     double amp, frq, phs,k;
     double result;
     result = 0;
+
     for (auto& iterator : waves) {
         amp = iterator.get_amplitude();
         frq = iterator.get_frequency();
