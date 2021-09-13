@@ -8,21 +8,21 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->widget->addGraph();
-    ui->widget->graph(0)->setPen(QPen(QColor(0, 0, 0), 4));
-    ui->widget->addGraph();
-    ui->widget->graph(0)->setAntialiasedFill(false);
-    ui->widget->graph(1)->setPen(QPen(QColor(0, 191, 255), 2));
-    ui->widget->graph(1)->setAntialiasedFill(false);
+    ui->widget->graph(0)->setPen(QPen(QColor(0, 191, 255), 3));
+    ui->widget->graph(0)->setAntialiasedFill(true);
+    //ui->widget->addGraph();
+    //ui->widget->graph(1)->setPen(QPen(QColor(0, 191, 255), 1));
+    //ui->widget->graph(1)->setAntialiasedFill(false);
 
     double A =1;
     double k1=10;
     double k2= 9;
     double dw=0.001;
-    double w = 8;//*dw*k1/(k1-k2);
+    double w = 10;//*dw*k1/(k1-k2);
 
     wave test_wave_1 = wave(A, w, 0 , k1);
     wave test_wave_2 = wave(A, w+dw, 0, k2);
-    wave test_wave_3 = wave(A, w-dw, 0, 3);
+    //wave test_wave_3 = wave(A, w-dw, 0, 3);
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
     //waves.push_back(test_wave_3);
@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->xAxis->setTickLabels(false);
     ui->widget->yAxis->setTickLabels(true);
 
-    h = 0.1;
+    h = 0.05;
     x.push_back(0);
     for (int i=1; i<=20/h; i++)
     {
@@ -67,7 +67,7 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::realtimePlot()
 {
     ui->widget->graph(0)->data()->clear();
-    ui->widget->graph(1)->data()->clear();
+    //ui->widget->graph(1)->data()->clear();
 
     double key = my_timer->elapsed() / 1000.0;
     static double lastPointKey = 0;
@@ -76,7 +76,7 @@ void MainWindow::realtimePlot()
     {
         for (auto& iter : x) {
             ui->widget->graph(0)->addData(iter, wave_pkg(iter, key));
-            ui->widget->graph(1)->addData(iter, true_wave_pkg(iter, key));
+            //ui->widget->graph(1)->addData(iter, true_wave_pkg(iter, key));
         }
         //ui->widget->graph(0)->rescaleValueAxis();
         lastPointKey = key;
@@ -125,3 +125,9 @@ void MainWindow::on_pushButton_clicked()
     new QWidget();
 }
 
+/*
+void MainWindow::on_lineEdit_4_editingFinished()
+{
+    w = self.on_lineEdit_4.text();
+}
+*/

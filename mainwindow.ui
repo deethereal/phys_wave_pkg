@@ -75,7 +75,7 @@
     <property name="geometry">
      <rect>
       <x>500</x>
-      <y>340</y>
+      <y>350</y>
       <width>91</width>
       <height>30</height>
      </rect>
@@ -98,7 +98,7 @@
     <property name="geometry">
      <rect>
       <x>30</x>
-      <y>360</y>
+      <y>350</y>
       <width>231</width>
       <height>161</height>
      </rect>
@@ -109,7 +109,7 @@
        <item>
         <widget class="QLabel" name="label_3">
          <property name="text">
-          <string>TextLabel</string>
+          <string>Не трогать Не работает</string>
          </property>
         </widget>
        </item>
@@ -158,6 +158,28 @@
       </layout>
      </item>
     </layout>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_4">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>350</y>
+      <width>113</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>w</string>
+    </property>
+    <property name="cursorPosition">
+     <number>1</number>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
