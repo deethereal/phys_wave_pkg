@@ -5,6 +5,7 @@
 QVector<wave> waves;
 
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -13,8 +14,8 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(40, 110, 255),2));
     ui->widget->graph(0)->setAntialiasedFill(false);
-    wave test_wave = wave(2, 0.5, 0);
-    wave new_wave = wave(0.5, 10,0);
+    wave test_wave = wave(0.1, 5.002, 0, 3);
+    wave new_wave = wave(0.1, 4.9997,0, 3);
     waves.push_back(test_wave);
     waves.push_back(new_wave);
     //ui->widget->yAxis->setRange(-1.5, 1.5);
@@ -53,7 +54,7 @@ void MainWindow::realtimePlot()
     static double lastPointKey = 0;
     if(key - lastPointKey > 0.002)
     {
-        ui->widget->graph(0)->addData(key, wave_pkg(key)); // добавляет точку
+        ui->widget->graph(0)->addData(key, wave_pkg(key, key)); // добавляет точку
         ui->widget->graph(0)->rescaleValueAxis();
 
         lastPointKey = key;
@@ -64,17 +65,18 @@ void MainWindow::realtimePlot()
     ui->widget->replot(); //строит
 }
 
-double MainWindow::wave_pkg(double x)
+double MainWindow::wave_pkg(double x, double t)
 {
-    double amp, frq, phs;
+    double amp, frq, phs,k;
     double result;
     result = 0;
     for (auto& iterator : waves) {
         amp = iterator.get_amplitude();
         frq = iterator.get_frequency();
         phs = iterator.get_phase();
+        k  = iterator.get_kvalue();
 
-        result += amp*sin(frq*x + phs);
+        result += amp*sin(frq*x - k*t + phs);
     }
     return result;
 }

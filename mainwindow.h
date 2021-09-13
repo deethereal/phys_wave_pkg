@@ -40,6 +40,6 @@ private:
     QElapsedTimer *my_timer;
 
 private:
-    double wave_pkg(double x);
+    double wave_pkg(double x, double t);
 };
 #endif // MAINWINDOW_H
