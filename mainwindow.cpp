@@ -2,6 +2,13 @@
 #include "ui_mainwindow.h"
 #include<QFont>
 
+double A =1;
+double k1=10;
+double k2= 9;
+double dw=0.001;
+double w = 10;//*dw*k1/(k1-k2);
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -10,22 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(0, 191, 255), 3));
     ui->widget->graph(0)->setAntialiasedFill(true);
-    //ui->widget->addGraph();
-    //ui->widget->graph(1)->setPen(QPen(QColor(0, 191, 255), 1));
-    //ui->widget->graph(1)->setAntialiasedFill(false);
 
-    double A =1;
-    double k1=10;
-    double k2= 9;
-    double dw=0.001;
-    double w = 10;//*dw*k1/(k1-k2);
-
-    wave test_wave_1 = wave(A, w, 0 , k1);
-    wave test_wave_2 = wave(A, w+dw, 0, k2);
-    //wave test_wave_3 = wave(A, w-dw, 0, 3);
-    waves.push_back(test_wave_1);
-    waves.push_back(test_wave_2);
-    //waves.push_back(test_wave_3);
 
     ui->widget->xAxis->setRange(0, 20);
     ui->widget->yAxis->setRange(-5, 5);
@@ -58,6 +50,13 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_2_clicked()
 {
+    waves.clear();
+    ui->w_info->setText(QString::number(w, 'i', 0));
+    wave test_wave_1 = wave(A, w, 0 , k1);
+    wave test_wave_2 = wave(A, w+dw, 0, k2);
+    //wave test_wave_3 = wave(A, w-dw, 0, 3);
+    waves.push_back(test_wave_1);
+    waves.push_back(test_wave_2);
     my_timer->start();
     /* Set up and initialize the graph plotting timer */
     connect(&timer_plot, SIGNAL(timeout()), this, SLOT(realtimePlot()));
@@ -125,9 +124,10 @@ void MainWindow::on_pushButton_clicked()
     new QWidget();
 }
 
-/*
+
+
 void MainWindow::on_lineEdit_4_editingFinished()
 {
-    w = self.on_lineEdit_4.text();
+    w = ui->lineEdit_4->text().toDouble();
 }
-*/
+
