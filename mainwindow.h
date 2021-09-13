@@ -16,6 +16,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    QVector<wave> waves;
+
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
@@ -32,12 +34,14 @@ private:
     int N;
     unsigned long adc_data_g;
 
-    QVector <double> x, y;
+    QVector<double> x;
+    QVector<double> y;
 
     QTimer timer_plot;
     int time;
     QTimer *timer;
     QElapsedTimer *my_timer;
+
 
 private:
     double wave_pkg(double x, double t);

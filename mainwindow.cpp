@@ -2,36 +2,43 @@
 #include "ui_mainwindow.h"
 #include<QFont>
 
-QVector<wave> waves;
-
-
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     ui->widget->addGraph();
-    ui->widget->graph(0)->setPen(QPen(QColor(40, 110, 255),2));
+    ui->widget->graph(0)->setPen(QPen(QColor(40, 110, 255), 2));
     ui->widget->graph(0)->setAntialiasedFill(false);
-    wave test_wave = wave(0.1, 5.002, 0, 3);
-    wave new_wave = wave(0.1, 4.9997,0, 3);
-    waves.push_back(test_wave);
-    waves.push_back(new_wave);
-    //ui->widget->yAxis->setRange(-1.5, 1.5);
 
-   ui->widget->yAxis->setLabel("Value");
+    wave test_wave_1 = wave(1, 1, 2, 1);
+    wave test_wave_2 = wave(2, 2, 0, 2);
+    waves.push_back(test_wave_1);
+    waves.push_back(test_wave_2);
+
+    ui->widget->xAxis->setRange(0, 20);
+    ui->widget->yAxis->setRange(-5, 5);
+
+    ui->widget->yAxis->setLabel("Value");
 
 
 /* Make top and right axis visible, but without ticks and label */
-   ui->widget->xAxis->setVisible(false);
-   ui->widget->yAxis->setVisible(true);
+    ui->widget->xAxis->setVisible(false);
+    ui->widget->yAxis->setVisible(true);
 
-   ui->widget->xAxis->setTicks(false);
-   ui->widget->yAxis->setTicks(true);
+    ui->widget->xAxis->setTicks(false);
+    ui->widget->yAxis->setTicks(true);
 
-   ui->widget->xAxis->setTickLabels(false);
-   ui->widget->yAxis->setTickLabels(true);
+    ui->widget->xAxis->setTickLabels(false);
+    ui->widget->yAxis->setTickLabels(true);
+
+    h = 0.1;
+    x.push_back(0);
+    for (int i=1; i<=20/h; i++)
+    {
+        x.push_back(i*h);
+        //printf("%f\n", x[i]);
+    }
 }
 
 MainWindow::~MainWindow()
@@ -39,33 +46,38 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
 void MainWindow::on_pushButton_2_clicked()
 {
     my_timer->start();
+
     /* Set up and initialize the graph plotting timer */
     connect(&timer_plot, SIGNAL(timeout()), this, SLOT(realtimePlot()));
-    timer_plot.start(0);
+    timer_plot.start(20);
 }
 
 void MainWindow::realtimePlot()
 {
+    ui->widget->graph(0)->data()->clear();
     double key = my_timer->elapsed() / 1000.0;
     static double lastPointKey = 0;
-    if(key - lastPointKey > 0.002)
+    if(key - lastPointKey > 0.02)
     {
-        ui->widget->graph(0)->addData(key, wave_pkg(key, key)); // добавляет точку
-        ui->widget->graph(0)->rescaleValueAxis();
+        for (auto& iter : x) {
+            ui->widget->graph(0)->addData(iter, wave_pkg(iter, key));
+            //printf("%d\n", iter);
+        }
+
+        //ui->widget->graph(0)->rescaleValueAxis();
 
         lastPointKey = key;
     }
 
     /* make key axis range scroll right with the data at a constant range of 8. */
-    ui->widget->xAxis->setRange(key, 20, Qt::AlignRight);
+    //ui->widget->xAxis->setRange(key, 20, Qt::AlignRight);
     ui->widget->replot(); //строит
 }
 
-double MainWindow::wave_pkg(double x, double t)
+double MainWindow::wave_pkg(double X, double T)
 {
     double amp, frq, phs,k;
     double result;
@@ -76,7 +88,7 @@ double MainWindow::wave_pkg(double x, double t)
         phs = iterator.get_phase();
         k  = iterator.get_kvalue();
 
-        result += amp*sin(frq*x - k*t + phs);
+        result += amp*sin(frq*T - k*X + phs);
     }
     return result;
 }
