@@ -5,6 +5,7 @@
 #include <QVector>
 #include <QTimer>
 #include <QElapsedTimer>
+#include "wave.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -21,17 +22,25 @@ public:
 private slots:
     void on_pushButton_2_clicked();
     void TimerSlot();
-public slots:
     void realtimePlot();
+
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
+
     double xBegin, xEnd, h, X;
     int N;
     unsigned long adc_data_g;
-    QTimer timer_plot;
+
     QVector <double> x, y;
-    QTimer *timer;
+
+    QTimer timer_plot;
     int time;
+    QTimer *timer;
     QElapsedTimer *my_timer;
+
+private:
+    double wave_pkg(double x, QVector <wave> waves);
 };
 #endif // MAINWINDOW_H
