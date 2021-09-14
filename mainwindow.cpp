@@ -13,13 +13,14 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    int x_len = 17;
     ui->setupUi(this);
     ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(0, 191, 255), 3));
     ui->widget->graph(0)->setAntialiasedFill(true);
 
 
-    ui->widget->xAxis->setRange(0, 20);
+    ui->widget->xAxis->setRange(0, x_len);
     ui->widget->yAxis->setRange(-5, 5);
 
     ui->widget->yAxis->setLabel("Value");
@@ -37,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     h = 0.05;
     x.push_back(0);
-    for (int i=1; i<=20/h; i++)
+    for (int i=1; i<=x_len/h; i++)
     {
         x.push_back(i*h);
     }
@@ -50,6 +51,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_2_clicked()
 {
+
     w1 = ui->w1->text().toDouble();
     w2 = ui->w2->text().toDouble();
     ui->widget->graph(0)->data()->clear();
@@ -69,8 +71,8 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::realtimePlot()
 {
+
     ui->widget->graph(0)->data()->clear();
-    //ui->widget->graph(1)->data()->clear();
 
     double key = my_timer->elapsed() / 1000.0;
     static double lastPointKey = 0;
@@ -79,9 +81,7 @@ void MainWindow::realtimePlot()
     {
         for (auto& iter : x) {
             ui->widget->graph(0)->addData(iter, wave_pkg(iter, key));
-            //ui->widget->graph(1)->addData(iter, true_wave_pkg(iter, key));
         }
-        //ui->widget->graph(0)->rescaleValueAxis();
         lastPointKey = key;
     }
     //ui->widget->xAxis->setRange(key, 20, Qt::AlignRight);
