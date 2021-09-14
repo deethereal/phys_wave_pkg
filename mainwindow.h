@@ -27,8 +27,6 @@ private slots:
 
     void on_pushButton_clicked();
 
-    void on_lineEdit_4_editingFinished();
-
 private:
     Ui::MainWindow *ui;
 

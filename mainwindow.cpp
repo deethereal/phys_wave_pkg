@@ -2,11 +2,11 @@
 #include "ui_mainwindow.h"
 #include<QFont>
 
-double A =1;
+double A =1.3;
 double k1=10;
 double k2= 9;
-double dw=0.001;
-double w = 10;//*dw*k1/(k1-k2);
+double w2=10;
+double w1 = 7;//*dw*k1/(k1-k2);
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent)
 /* Make top and right axis visible, but without ticks and label */
     ui->widget->xAxis->setVisible(false);
     ui->widget->yAxis->setVisible(true);
-
+    my_timer->start();
     ui->widget->xAxis->setTicks(false);
     ui->widget->yAxis->setTicks(true);
 
@@ -50,17 +50,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_2_clicked()
 {
+    w1 = ui->w1->text().toDouble();
+    w2 = ui->w2->text().toDouble();
+    ui->widget->graph(0)->data()->clear();
+    ui->widget->replot();
     waves.clear();
-    ui->w_info->setText(QString::number(w, 'i', 0));
-    wave test_wave_1 = wave(A, w, 0 , k1);
-    wave test_wave_2 = wave(A, w+dw, 0, k2);
-    //wave test_wave_3 = wave(A, w-dw, 0, 3);
+    wave test_wave_1 = wave(A, w1, 0 , k1);
+    wave test_wave_2 = wave(A, w2, 3.141592/4, k2);
+    wave test_wave_3 = wave(A, w2+8, 0, 9.5);
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
-    my_timer->start();
+    //waves.push_back(test_wave_3);
+    my_timer->restart();
     /* Set up and initialize the graph plotting timer */
     connect(&timer_plot, SIGNAL(timeout()), this, SLOT(realtimePlot()));
-    timer_plot.start(30);
+    timer_plot.start(20);
 }
 
 void MainWindow::realtimePlot()
@@ -122,12 +126,5 @@ double MainWindow::true_wave_pkg(double X, double T)
 void MainWindow::on_pushButton_clicked()
 {
     new QWidget();
-}
-
-
-
-void MainWindow::on_lineEdit_4_editingFinished()
-{
-    w = ui->lineEdit_4->text().toDouble();
 }
 
