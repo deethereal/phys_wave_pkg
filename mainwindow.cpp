@@ -4,7 +4,7 @@
 
 double A =1.3;
 double k1=10;
-double k2= 9;
+double k2= 7;
 double w2=10;
 double w1 = 7;//*dw*k1/(k1-k2);
 
@@ -65,7 +65,6 @@ void MainWindow::on_pushButton_2_clicked()
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
     //waves.push_back(test_wave_3);
-    //my_timer->restart();
     /* Set up and initialize the graph plotting timer */
     timer_plot.start(20);
 }
