@@ -18,8 +18,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     ui->widget->addGraph();
     ui->widget->addGraph();
+    ui->widget->addGraph();
+    ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(0, 191, 255), 3));
     ui->widget->graph(1)->setPen(QPen(QColor(0, 255, 0), 6));
+    ui->widget->graph(2)->setPen(QPen(QColor(0, 255, 0), 6));
+    ui->widget->graph(3)->setPen(QPen(QColor(0, 255, 0), 6));
     ui->widget->graph(0)->setAntialiasedFill(true);
 
 
@@ -77,29 +81,6 @@ void MainWindow::on_pushButton_2_clicked()
 
 }
 
-void MainWindow::grSpeed()
-{
-
-    double key = my_timer->elapsed() / 1000.0;
-    ui->widget->graph(1)->data()->clear();
-
-    static double lastPointKey = 0;
-    if(key - lastPointKey > 0.0001)
-    {
-        double value = key*(w1-w2)/(k1-k2)+start_x;
-        //double new_x = value  - int(value);
-        for (int i=0;i<2000;i++) {
-            if (value>=x_len)
-            {
-                value-=x_len;
-            }
-            ui->widget->graph(1)->addData(int(value), 0);
-        }
-        lastPointKey = key;
-    }
-    //ui->widget->xAxis->setRange(key, 20, Qt::AlignRight);
-    ui->widget->replot();
- }
 void MainWindow::realtimePlot()
 {
 
@@ -108,18 +89,33 @@ void MainWindow::realtimePlot()
 
     double key = my_timer->elapsed() / 1000.0;
     ui->widget->graph(1)->data()->clear();
+    ui->widget->graph(2)->data()->clear();
+    ui->widget->graph(3)->data()->clear();
     static double lastPointKey = 0;
-    double value = key*(w1-w2)/(k1-k2)+start_x;
+    double value1 = key*(w1-w2)/(k1-k2)+start_x;
+    double value2 = key*(w1-w2)/(k1-k2)-start_x;
+    double value3 = key*(w1-w2)/(k1-k2)+3*start_x;
     if(key - lastPointKey > 0.002)
     {
 
         for (auto& iter : x) {
-            while (value>=x_len)
+            while (value1>=x_len)
             {
-                value-=x_len;
+                value1-=x_len;
             }
+            while (value3>=x_len)
+            {
+                value3-=x_len;
+            }
+            while (value2>=x_len)
+            {
+                value2-=x_len;
+            }
+
             ui->widget->graph(0)->addData(iter, wave_pkg(iter, key));
-            ui->widget->graph(1)->addData(value, 0);
+            ui->widget->graph(1)->addData(value1, 0);
+            ui->widget->graph(2)->addData(value2, 0);
+            ui->widget->graph(3)->addData(value3, 0);
         }
         lastPointKey = key;
     }
