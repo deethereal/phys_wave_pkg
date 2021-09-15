@@ -46,7 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
         x.push_back(i*h);
     }
     connect(&timer_plot, SIGNAL(timeout()), this, SLOT(realtimePlot()));
-    connect(&speed_plot, SIGNAL(timeout()), this, SLOT(grSpeed()));
+    //connect(&speed_plot, SIGNAL(timeout()), this, SLOT(grSpeed()));
 
 }
 
@@ -71,8 +71,8 @@ void MainWindow::on_pushButton_2_clicked()
     waves.push_back(test_wave_2);
     //waves.push_back(test_wave_3);
     /* Set up and initialize the graph plotting timer */
-    speed_plot.start(0);
-    timer_plot.start(30);
+    //speed_plot.start(0);
+    timer_plot.start(1);
 
 
 }
@@ -107,13 +107,19 @@ void MainWindow::realtimePlot()
 
 
     double key = my_timer->elapsed() / 1000.0;
+    ui->widget->graph(1)->data()->clear();
     static double lastPointKey = 0;
-
+    double value = key*(w1-w2)/(k1-k2)+start_x;
     if(key - lastPointKey > 0.002)
     {
 
         for (auto& iter : x) {
+            while (value>=x_len)
+            {
+                value-=x_len;
+            }
             ui->widget->graph(0)->addData(iter, wave_pkg(iter, key));
+            ui->widget->graph(1)->addData(value, 0);
         }
         lastPointKey = key;
     }
