@@ -1,22 +1,25 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include<QFont>
+#include <QtMath>
 
 double A =1.3;
 double k1=10;
-double k2= 7;
-double w2=10;
-double w1 = 7;//*dw*k1/(k1-k2);
-
+double k2= 9;
+double w2=7;
+double w1 = 10;//*dw*k1/(k1-k2);
+double x_len = 6*M_PI;
+double start_x=M_PI;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
-    int x_len = 17;
     ui->setupUi(this);
     ui->widget->addGraph();
+    ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(0, 191, 255), 3));
+    ui->widget->graph(1)->setPen(QPen(QColor(0, 255, 0), 6));
     ui->widget->graph(0)->setAntialiasedFill(true);
 
 
@@ -27,13 +30,13 @@ MainWindow::MainWindow(QWidget *parent)
 
 
 /* Make top and right axis visible, but without ticks and label */
-    ui->widget->xAxis->setVisible(false);
+    ui->widget->xAxis->setVisible(true);
     ui->widget->yAxis->setVisible(true);
     my_timer->start();
-    ui->widget->xAxis->setTicks(false);
+    ui->widget->xAxis->setTicks(true);
     ui->widget->yAxis->setTicks(true);
 
-    ui->widget->xAxis->setTickLabels(false);
+    ui->widget->xAxis->setTickLabels(true);
     ui->widget->yAxis->setTickLabels(true);
 
     h = 0.05;
@@ -43,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent)
         x.push_back(i*h);
     }
     connect(&timer_plot, SIGNAL(timeout()), this, SLOT(realtimePlot()));
+    connect(&speed_plot, SIGNAL(timeout()), this, SLOT(grSpeed()));
 
 }
 
@@ -57,28 +61,57 @@ void MainWindow::on_pushButton_2_clicked()
     w1 = ui->w1->text().toDouble();
     w2 = ui->w2->text().toDouble();
     ui->widget->graph(0)->data()->clear();
+    ui->widget->graph(1)->data()->clear();
     ui->widget->replot();
     waves.clear();
     wave test_wave_1 = wave(A, w1, 0 , k1);
-    wave test_wave_2 = wave(A, w2, 3.141592/4, k2);
+    wave test_wave_2 = wave(A, w2, 0, k2);
     wave test_wave_3 = wave(A, w2+8, 0, 9.5);
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
     //waves.push_back(test_wave_3);
     /* Set up and initialize the graph plotting timer */
-    timer_plot.start(20);
+    speed_plot.start(0);
+    timer_plot.start(30);
+
+
 }
 
+void MainWindow::grSpeed()
+{
+
+    double key = my_timer->elapsed() / 1000.0;
+    ui->widget->graph(1)->data()->clear();
+
+    static double lastPointKey = 0;
+    if(key - lastPointKey > 0.0001)
+    {
+        double value = key*(w1-w2)/(k1-k2)+start_x;
+        //double new_x = value  - int(value);
+        for (int i=0;i<2000;i++) {
+            if (value>=x_len)
+            {
+                value-=x_len;
+            }
+            ui->widget->graph(1)->addData(int(value), 0);
+        }
+        lastPointKey = key;
+    }
+    //ui->widget->xAxis->setRange(key, 20, Qt::AlignRight);
+    ui->widget->replot();
+ }
 void MainWindow::realtimePlot()
 {
 
     ui->widget->graph(0)->data()->clear();
+
 
     double key = my_timer->elapsed() / 1000.0;
     static double lastPointKey = 0;
 
     if(key - lastPointKey > 0.002)
     {
+
         for (auto& iter : x) {
             ui->widget->graph(0)->addData(iter, wave_pkg(iter, key));
         }

@@ -24,6 +24,7 @@ public:
 private slots:
     void on_pushButton_2_clicked();
     void realtimePlot();
+    void grSpeed();
 
     void on_pushButton_clicked();
 
@@ -38,6 +39,7 @@ private:
     QVector<double> y;
 
     QTimer timer_plot;
+    QTimer speed_plot;
     int time;
     QTimer *timer;
     QElapsedTimer *my_timer;
