@@ -42,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent)
     {
         x.push_back(i*h);
     }
+    connect(&timer_plot, SIGNAL(timeout()), this, SLOT(realtimePlot()));
+
 }
 
 MainWindow::~MainWindow()
@@ -63,9 +65,8 @@ void MainWindow::on_pushButton_2_clicked()
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
     //waves.push_back(test_wave_3);
-    my_timer->restart();
+    //my_timer->restart();
     /* Set up and initialize the graph plotting timer */
-    connect(&timer_plot, SIGNAL(timeout()), this, SLOT(realtimePlot()));
     timer_plot.start(20);
 }
 
