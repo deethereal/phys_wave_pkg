@@ -11,6 +11,12 @@ double w1 = 10;//*dw*k1/(k1-k2);
 double x_len = 6*M_PI;
 double start_x=M_PI;
 
+double key;
+double lastPointKey;
+double value;
+double phase_dot;
+double value1,value2,value3;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -34,8 +40,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->widget->yAxis->setLabel("Value");
 
-
-/* Make top and right axis visible, but without ticks and label */
     ui->widget->xAxis->setVisible(true);
     ui->widget->yAxis->setVisible(true);
     ui->widget->xAxis->setTicks(true);
@@ -51,8 +55,6 @@ MainWindow::MainWindow(QWidget *parent)
         x.push_back(i*h);
     }
     connect(&timer_plot, SIGNAL(timeout()), this, SLOT(realtimePlot()));
-    //connect(&speed_plot, SIGNAL(timeout()), this, SLOT(grSpeed()));
-
 }
 
 MainWindow::~MainWindow()
@@ -71,23 +73,20 @@ void MainWindow::on_pushButton_2_clicked()
     ui->widget->graph(3)->data()->clear();
     ui->widget->graph(4)->data()->clear();
     ui->widget->replot();
+
     waves.clear();
     wave test_wave_1 = wave(A, w1, 0 , k1);
     wave test_wave_2 = wave(A, w2, 0, k2);
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
-    /* Set up and initialize the graph plotting timer */
+
     my_timer->start();
     timer_plot.start(1);
-
-
 }
 
 void MainWindow::realtimePlot()
 {
-
-
-    double key = my_timer->elapsed() / 1000.0;
+    key = my_timer->elapsed() / 1000.0;
 
     ui->widget->graph(0)->data()->clear();
     ui->widget->graph(1)->data()->clear();
@@ -95,12 +94,10 @@ void MainWindow::realtimePlot()
     ui->widget->graph(3)->data()->clear();
     ui->widget->graph(4)->data()->clear();
 
-
-    double lastPointKey = 0;
-    double value = key*(w1-w2)/(k1-k2);
-    double phase_dot = key*(w1+w2)/(k1+k2);
+    lastPointKey = 0;
+    value = key*(w1-w2)/(k1-k2);
+    phase_dot = key*(w1+w2)/(k1+k2);
     int n=1;
-    double value1,value2,value3;
     if(key - lastPointKey > 0.001)
     {
 
@@ -113,12 +110,11 @@ void MainWindow::realtimePlot()
             {
                 phase_dot-=x_len;
                 n=-n;
-
             }
 
-             value1 = value+start_x;
-             value2 = value-start_x;
-             value3 = value+3*start_x;
+            value1 = value+start_x;
+            value2 = value-start_x;
+            value3 = value+3*start_x;
             if (value1>=x_len)
             {
                 value1-=x_len;
@@ -133,14 +129,15 @@ void MainWindow::realtimePlot()
             }
 
             ui->widget->graph(0)->addData(iter, wave_pkg(iter, key));
+
             ui->widget->graph(1)->addData(value1, 0);
             ui->widget->graph(2)->addData(value2, 0);
             ui->widget->graph(3)->addData(value3, 0);
+
             ui->widget->graph(4)->addData(phase_dot, n*true_wave_pkg(phase_dot, key));
         }
         lastPointKey = key;
     }
-    //ui->widget->xAxis->setRange(key, 20, Qt::AlignRight);
     ui->widget->replot();
 }
 
