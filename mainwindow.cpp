@@ -4,8 +4,8 @@
 #include <QtMath>
 
 double A =1.3;
-double k1=10;
-double k2= 9;
+double k1=8;
+double k2= 7;
 double w2=7;
 double w1 = 10;//*dw*k1/(k1-k2);
 double x_len = 6*M_PI;
@@ -20,10 +20,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->addGraph();
     ui->widget->addGraph();
     ui->widget->addGraph();
+    ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(0, 191, 255), 3));
     ui->widget->graph(1)->setPen(QPen(QColor(0, 255, 0), 6));
     ui->widget->graph(2)->setPen(QPen(QColor(0, 255, 0), 6));
     ui->widget->graph(3)->setPen(QPen(QColor(0, 255, 0), 6));
+    ui->widget->graph(4)->setPen(QPen(QColor(255, 0, 0), 8));
     ui->widget->graph(0)->setAntialiasedFill(true);
 
 
@@ -36,7 +38,6 @@ MainWindow::MainWindow(QWidget *parent)
 /* Make top and right axis visible, but without ticks and label */
     ui->widget->xAxis->setVisible(true);
     ui->widget->yAxis->setVisible(true);
-    my_timer->start();
     ui->widget->xAxis->setTicks(true);
     ui->widget->yAxis->setTicks(true);
 
@@ -76,6 +77,8 @@ void MainWindow::on_pushButton_2_clicked()
     //waves.push_back(test_wave_3);
     /* Set up and initialize the graph plotting timer */
     //speed_plot.start(0);
+    my_timer->start();
+
     timer_plot.start(1);
 
 
@@ -84,38 +87,53 @@ void MainWindow::on_pushButton_2_clicked()
 void MainWindow::realtimePlot()
 {
 
-    ui->widget->graph(0)->data()->clear();
-
 
     double key = my_timer->elapsed() / 1000.0;
+
+    ui->widget->graph(0)->data()->clear();
     ui->widget->graph(1)->data()->clear();
     ui->widget->graph(2)->data()->clear();
     ui->widget->graph(3)->data()->clear();
-    static double lastPointKey = 0;
-    double value1 = key*(w1-w2)/(k1-k2)+start_x;
-    double value2 = key*(w1-w2)/(k1-k2)-start_x;
-    double value3 = key*(w1-w2)/(k1-k2)+3*start_x;
+    ui->widget->graph(4)->data()->clear();
+
+
+    double lastPointKey = 0;
+    double value = key*(w1-w2)/(k1-k2);
+    double phase_dot = key*(w1+w2)/(k1+k2);
+    double value1,value2,value3;
     if(key - lastPointKey > 0.002)
     {
 
         for (auto& iter : x) {
-            while (value1>=x_len)
+            while (value>=x_len)
+            {
+                value-=x_len;
+            }
+            while (phase_dot>=x_len)
+            {
+                phase_dot-=x_len;
+            }
+             value1 = value+start_x;
+             value2 = value-start_x;
+             value3 = value+3*start_x;
+            if (value1>=x_len)
             {
                 value1-=x_len;
             }
-            while (value3>=x_len)
-            {
-                value3-=x_len;
-            }
-            while (value2>=x_len)
+            if (value2>=x_len)
             {
                 value2-=x_len;
+            }
+            if (value3>=x_len)
+            {
+                value3-=x_len;
             }
 
             ui->widget->graph(0)->addData(iter, wave_pkg(iter, key));
             ui->widget->graph(1)->addData(value1, 0);
             ui->widget->graph(2)->addData(value2, 0);
             ui->widget->graph(3)->addData(value3, 0);
+            ui->widget->graph(4)->addData(phase_dot, true_wave_pkg(phase_dot, key));
         }
         lastPointKey = key;
     }
@@ -154,7 +172,7 @@ double MainWindow::true_wave_pkg(double X, double T)
         i++;
     }
 
-    result = 2*amp[0]*cos((frq[0]-frq[1])*T/2 - (k[0]-k[1])*X/2)*cos((frq[0]+frq[1])*T/2 - (k[0]+k[1])*X/2);
+    result = 2*amp[0]*cos((frq[0]-frq[1])*T/2 - (k[0]-k[1])*X/2);
     return result;
 }
 
