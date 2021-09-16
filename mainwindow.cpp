@@ -4,8 +4,8 @@
 #include <QtMath>
 
 double A =1.3;
-double k1=8;
-double k2= 7;
+double k1=6;
+double k2= 5;
 double w2=7;
 double w1 = 10;//*dw*k1/(k1-k2);
 double x_len = 6*M_PI;
@@ -67,18 +67,17 @@ void MainWindow::on_pushButton_2_clicked()
     w2 = ui->w2->text().toDouble();
     ui->widget->graph(0)->data()->clear();
     ui->widget->graph(1)->data()->clear();
+    ui->widget->graph(2)->data()->clear();
+    ui->widget->graph(3)->data()->clear();
+    ui->widget->graph(4)->data()->clear();
     ui->widget->replot();
     waves.clear();
     wave test_wave_1 = wave(A, w1, 0 , k1);
     wave test_wave_2 = wave(A, w2, 0, k2);
-    wave test_wave_3 = wave(A, w2+8, 0, 9.5);
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
-    //waves.push_back(test_wave_3);
     /* Set up and initialize the graph plotting timer */
-    //speed_plot.start(0);
     my_timer->start();
-
     timer_plot.start(1);
 
 
@@ -100,8 +99,9 @@ void MainWindow::realtimePlot()
     double lastPointKey = 0;
     double value = key*(w1-w2)/(k1-k2);
     double phase_dot = key*(w1+w2)/(k1+k2);
+    int n=1;
     double value1,value2,value3;
-    if(key - lastPointKey > 0.002)
+    if(key - lastPointKey > 0.001)
     {
 
         for (auto& iter : x) {
@@ -112,7 +112,10 @@ void MainWindow::realtimePlot()
             while (phase_dot>=x_len)
             {
                 phase_dot-=x_len;
+                n=-n;
+
             }
+
              value1 = value+start_x;
              value2 = value-start_x;
              value3 = value+3*start_x;
@@ -133,7 +136,7 @@ void MainWindow::realtimePlot()
             ui->widget->graph(1)->addData(value1, 0);
             ui->widget->graph(2)->addData(value2, 0);
             ui->widget->graph(3)->addData(value3, 0);
-            ui->widget->graph(4)->addData(phase_dot, true_wave_pkg(phase_dot, key));
+            ui->widget->graph(4)->addData(phase_dot, n*true_wave_pkg(phase_dot, key));
         }
         lastPointKey = key;
     }
