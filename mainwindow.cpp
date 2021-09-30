@@ -17,13 +17,12 @@ double value;
 double phase_dot;
 double value1,value2,value3;
 
-bool plot_is_moving = 0;
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(0, 191, 255), 3));
     ui->widget->graph(0)->setAntialiasedFill(true);
@@ -48,6 +47,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->widget->xAxis->setVisible(true);
     ui->widget->yAxis->setVisible(true);
+
     ui->widget->xAxis->setTicks(true);
     ui->widget->yAxis->setTicks(true);
 
@@ -61,6 +61,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         x.push_back(i*h);
     }
+
     connect(&timer_plot, SIGNAL(timeout()), this, SLOT(realtimePlot()));
 }
 
@@ -90,10 +91,8 @@ void MainWindow::on_pushButton_2_clicked()
     waves.push_back(test_wave_2);
 
     my_timer.restart();
-    timer_plot.stop();
+    //timer_plot.stop();
     timer_plot.start();
-
-    plot_is_moving = 1;
 }
 
 void MainWindow::realtimePlot()
@@ -198,11 +197,9 @@ void MainWindow::on_pushButton_clicked()
 void MainWindow::on_pushButton_3_clicked()
 {
     if (timer_plot.isActive()) {
-        plot_is_moving = 0;
         timer_plot.stop();
     }
     else {
-        plot_is_moving = 1;
-         timer_plot.start();
+        timer_plot.start();
     }
 }
