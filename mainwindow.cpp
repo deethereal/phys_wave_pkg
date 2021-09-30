@@ -1,13 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include<QFont>
+#include <QFont>
 #include <QtMath>
 
 double A =1.3;
 double k1=6;
 double k2= 5;
 double w2=7;
-double w1 = 10;//*dw*k1/(k1-k2);
+double w1 = 10; //*dw*k1/(k1-k2);
 double x_len = 6*M_PI;
 double start_x=M_PI;
 
@@ -23,16 +23,20 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     ui->widget->addGraph();
-    ui->widget->addGraph();
-    ui->widget->addGraph();
-    ui->widget->addGraph();
-    ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(0, 191, 255), 3));
-    ui->widget->graph(1)->setPen(QPen(QColor(0, 255, 0), 6));
-    ui->widget->graph(2)->setPen(QPen(QColor(0, 255, 0), 6));
-    ui->widget->graph(3)->setPen(QPen(QColor(0, 255, 0), 6));
-    ui->widget->graph(4)->setPen(QPen(QColor(255, 0, 0), 8));
     ui->widget->graph(0)->setAntialiasedFill(true);
+
+    ui->widget->addGraph();
+    ui->widget->graph(1)->setPen(QPen(QColor(0, 255, 0), 6));
+
+    ui->widget->addGraph();
+    ui->widget->graph(2)->setPen(QPen(QColor(0, 255, 0), 6));
+
+    ui->widget->addGraph();
+    ui->widget->graph(3)->setPen(QPen(QColor(0, 255, 0), 6));
+
+    ui->widget->addGraph();
+    ui->widget->graph(4)->setPen(QPen(QColor(255, 0, 0), 8));
 
 
     ui->widget->xAxis->setRange(0, x_len);
@@ -49,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->yAxis->setTickLabels(true);
 
     h = 0.05;
+
     x.push_back(0);
     for (int i=1; i<=x_len/h; i++)
     {
@@ -67,11 +72,13 @@ void MainWindow::on_pushButton_2_clicked()
 
     w1 = ui->w1->text().toDouble();
     w2 = ui->w2->text().toDouble();
+
     ui->widget->graph(0)->data()->clear();
     ui->widget->graph(1)->data()->clear();
     ui->widget->graph(2)->data()->clear();
     ui->widget->graph(3)->data()->clear();
     ui->widget->graph(4)->data()->clear();
+
     ui->widget->replot();
 
     waves.clear();
@@ -80,8 +87,8 @@ void MainWindow::on_pushButton_2_clicked()
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
 
-    my_timer->start();
-    timer_plot.start(1);
+    my_timer->restart();
+    timer_plot.start();
 }
 
 void MainWindow::realtimePlot()
@@ -179,5 +186,11 @@ double MainWindow::true_wave_pkg(double X, double T)
 void MainWindow::on_pushButton_clicked()
 {
     new QWidget();
+}
+
+
+void MainWindow::on_pushButton_3_clicked()
+{
+    timer_plot.stop();
 }
 
