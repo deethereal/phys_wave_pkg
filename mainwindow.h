@@ -40,10 +40,7 @@ private:
     QVector<double> y;
 
     QTimer timer_plot;
-    QTimer speed_plot;
-    int time;
-    QTimer *timer;
-    QElapsedTimer *my_timer;
+    QElapsedTimer my_timer;
 
 
 private:

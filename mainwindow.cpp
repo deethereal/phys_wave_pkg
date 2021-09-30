@@ -17,6 +17,8 @@ double value;
 double phase_dot;
 double value1,value2,value3;
 
+bool plot_is_moving = 0;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -79,7 +81,7 @@ void MainWindow::on_pushButton_2_clicked()
     ui->widget->graph(3)->data()->clear();
     ui->widget->graph(4)->data()->clear();
 
-    ui->widget->replot();
+    //ui->widget->replot();
 
     waves.clear();
     wave test_wave_1 = wave(A, w1, 0 , k1);
@@ -87,13 +89,16 @@ void MainWindow::on_pushButton_2_clicked()
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
 
-    my_timer->restart();
+    my_timer.restart();
+    timer_plot.stop();
     timer_plot.start();
+
+    plot_is_moving = 1;
 }
 
 void MainWindow::realtimePlot()
 {
-    key = my_timer->elapsed() / 1000.0;
+    key = my_timer.elapsed() / 1000.0;
 
     ui->widget->graph(0)->data()->clear();
     ui->widget->graph(1)->data()->clear();
@@ -104,6 +109,7 @@ void MainWindow::realtimePlot()
     lastPointKey = 0;
     value = key*(w1-w2)/(k1-k2);
     phase_dot = key*(w1+w2)/(k1+k2);
+
     int n=1;
     if(key - lastPointKey > 0.001)
     {
@@ -191,6 +197,12 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_pushButton_3_clicked()
 {
-    timer_plot.stop();
+    if (timer_plot.isActive()) {
+        plot_is_moving = 0;
+        timer_plot.stop();
+    }
+    else {
+        plot_is_moving = 1;
+         timer_plot.start();
+    }
 }
-
