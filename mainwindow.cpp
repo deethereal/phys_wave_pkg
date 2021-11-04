@@ -31,18 +31,25 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     ui->widget->addGraph();
-    ui->widget->graph(1)->setPen(QPen(QColor(0, 255, 0), 6));
+    ui->widget->graph(1)->setPen(QPen(QColor(0, 255, 0), 4));
+    ui->widget->graph(1)->setScatterStyle(QCPScatterStyle::ssDisc);
     ui->widget->graph(1)->setName(QString("Group speed"));
 
 
     ui->widget->addGraph();
-    ui->widget->graph(2)->setPen(QPen(QColor(0, 255, 0), 6));
+    ui->widget->graph(2)->setPen(QPen(QColor(0, 255, 0), 4));
+    ui->widget->graph(2)->setScatterStyle(QCPScatterStyle::ssDisc);
+
 
     ui->widget->addGraph();
-    ui->widget->graph(3)->setPen(QPen(QColor(0, 255, 0), 6));
+    ui->widget->graph(3)->setPen(QPen(QColor(0, 255, 0), 4));
+    ui->widget->graph(2)->setScatterStyle(QCPScatterStyle::ssDisc);
+
 
     ui->widget->addGraph();
-    ui->widget->graph(4)->setPen(QPen(QColor(255, 0, 0), 8));
+    ui->widget->graph(4)->setPen(QPen(QColor(255, 0, 0), 5));
+    ui->widget->graph(4)->setScatterStyle(QCPScatterStyle::ssSquare);
+
     ui->widget->graph(4)->setName(QString("Phase speed"));
 
 
@@ -68,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent)
     arLegend->addItem(new QCPPlottableLegendItem(arLegend, ui->widget->graph(1)));
 
     arLegend->addItem(new QCPPlottableLegendItem(arLegend, ui->widget->graph(4)));
-
+    arLegend->setIconSize(10,10);
     h = 0.05;
 
     x.push_back(0);
