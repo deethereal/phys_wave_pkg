@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFont>
+#include <iostream>>
 #include <QtMath>
 
 double A =1.3;
@@ -26,9 +27,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(0, 191, 255), 3));
     ui->widget->graph(0)->setAntialiasedFill(true);
+    ui->widget->graph(0)->setName(QString("Wave packet"));
+
 
     ui->widget->addGraph();
     ui->widget->graph(1)->setPen(QPen(QColor(0, 255, 0), 6));
+    ui->widget->graph(1)->setName(QString("Group speed"));
+
 
     ui->widget->addGraph();
     ui->widget->graph(2)->setPen(QPen(QColor(0, 255, 0), 6));
@@ -38,10 +43,12 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->widget->addGraph();
     ui->widget->graph(4)->setPen(QPen(QColor(255, 0, 0), 8));
+    ui->widget->graph(4)->setName(QString("Phase speed"));
+
 
 
     ui->widget->xAxis->setRange(0, x_len);
-    ui->widget->yAxis->setRange(-5, 5);
+    ui->widget->yAxis->setRange(-5, 7);
 
     ui->widget->yAxis->setLabel("Value");
 
@@ -53,6 +60,14 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->widget->xAxis->setTickLabels(true);
     ui->widget->yAxis->setTickLabels(true);
+    QCPLegend *arLegend = new QCPLegend;
+    ui->widget->axisRect()->insetLayout()->addElement(arLegend, Qt::AlignTop|Qt::AlignRight);
+    arLegend->setLayer("legend");
+    ui->widget->setAutoAddPlottableToLegend(false); // would add to the main legend (in the primary axis rect)
+    arLegend->addItem(new QCPPlottableLegendItem(arLegend, ui->widget->graph(0)));
+    arLegend->addItem(new QCPPlottableLegendItem(arLegend, ui->widget->graph(1)));
+
+    arLegend->addItem(new QCPPlottableLegendItem(arLegend, ui->widget->graph(4)));
 
     h = 0.05;
 
@@ -75,6 +90,8 @@ void MainWindow::on_pushButton_2_clicked()
 
     w1 = ui->w1->text().toDouble();
     w2 = ui->w2->text().toDouble();
+    k1 = ui->k1->text().toDouble();
+    k2 = ui->k2->text().toDouble();
 
     ui->widget->graph(0)->data()->clear();
     ui->widget->graph(1)->data()->clear();
@@ -89,10 +106,11 @@ void MainWindow::on_pushButton_2_clicked()
     wave test_wave_2 = wave(A, w2, 0, k2);
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
-
-    my_timer.restart();
-    //timer_plot.stop();
-    timer_plot.start();
+    if (!my_timer.isValid())
+    {
+        my_timer.start();
+        timer_plot.start();
+    }
 }
 
 void MainWindow::realtimePlot()
@@ -121,24 +139,45 @@ void MainWindow::realtimePlot()
             while (phase_dot>=x_len)
             {
                 phase_dot-=x_len;
-                n=-n;
+                if (int(k1+k2)%2!=0)
+                    n=-n;
             }
 
             value1 = value+start_x;
             value2 = value-start_x;
             value3 = value+3*start_x;
-            if (value1>=x_len)
+
+            //value1 = value1+(value1<0)*x_len-(x_len>=value1)*x_len; почему-то не сработало(
+
+            while (value1>=x_len)
             {
                 value1-=x_len;
+
             }
-            if (value2>=x_len)
+            while (value1<0)
+            {
+                value1+=x_len;
+                //QTextStream(stdout) <<"был тут"<< "\n";
+
+            }
+            while (value2>=x_len)
             {
                 value2-=x_len;
             }
-            if (value3>=x_len)
+            while (value2<0)
+            {
+                value2+=x_len;
+            }
+            while (value3>=x_len)
             {
                 value3-=x_len;
             }
+            while (value3<0)
+            {
+                value3+=x_len;
+            }
+            //QTextStream(stdout) <<value1<< "\n";
+
 
             ui->widget->graph(0)->addData(iter, wave_pkg(iter, key));
 
