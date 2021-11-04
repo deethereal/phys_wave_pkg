@@ -43,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->widget->addGraph();
     ui->widget->graph(3)->setPen(QPen(QColor(0, 255, 0), 4));
-    ui->widget->graph(2)->setScatterStyle(QCPScatterStyle::ssDisc);
+    ui->widget->graph(3)->setScatterStyle(QCPScatterStyle::ssDisc);
 
 
     ui->widget->addGraph();
@@ -113,16 +113,15 @@ void MainWindow::on_pushButton_2_clicked()
     wave test_wave_2 = wave(A, w2, 0, k2);
     waves.push_back(test_wave_1);
     waves.push_back(test_wave_2);
-    if (!my_timer.isValid())
-    {
-        my_timer.start();
-        timer_plot.start();
-    }
+    my_timer.restart();
+    timer_plot.start(1);
+
 }
 
 void MainWindow::realtimePlot()
 {
-    key = my_timer.elapsed() / 1000.0;
+
+    key = my_timer.elapsed() / 1000.0 + pause_duration;
 
     ui->widget->graph(0)->data()->clear();
     ui->widget->graph(1)->data()->clear();
@@ -234,18 +233,14 @@ double MainWindow::true_wave_pkg(double X, double T)
     return result;
 }
 
-void MainWindow::on_pushButton_clicked()
-{
-    new QWidget();
-}
-
-
 void MainWindow::on_pushButton_3_clicked()
 {
     if (timer_plot.isActive()) {
         timer_plot.stop();
+        pause_duration+= my_timer.elapsed()/1000.0;
     }
     else {
+        my_timer.restart();
         timer_plot.start();
     }
 }

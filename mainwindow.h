@@ -25,8 +25,6 @@ private slots:
     void on_pushButton_2_clicked();
     void realtimePlot();
 
-    void on_pushButton_clicked();
-
     void on_pushButton_3_clicked();
 
 private:
@@ -40,6 +38,8 @@ private:
     QVector<double> y;
 
     QTimer timer_plot;
+    QElapsedTimer tmp_timer;
+    double pause_duration = 0;
     QElapsedTimer my_timer;
 
 
