@@ -241,6 +241,6 @@ void MainWindow::on_pushButton_3_clicked()
     }
     else {
         my_timer.restart();
-        timer_plot.start();
+        timer_plot.start(1);
     }
 }
