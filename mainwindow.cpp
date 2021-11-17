@@ -1,14 +1,21 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFont>
-#include <iostream>>
+#include <iostream>
 #include <QtMath>
+#include <QPixmap>
 
-double A =1.3;
-double k1=6;
-double k2= 5;
-double w2=7;
+double A1 = 1.5;
+double A2 = 1.5;
+
+double A = 1.5;
+
+double k1 = 6;
+double k2 = 5;
+
 double w1 = 10; //*dw*k1/(k1-k2);
+double w2=7;
+
 double x_len = 6*M_PI;
 double start_x=M_PI;
 
@@ -23,6 +30,10 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    QPixmap pm("C:/Users/maxpr/Documents/QT Projects/phys_wave_pkg/im.png"); //!!УКАЗАТЬ СВОЙ ПУТЬ
+    ui->image_label->setPixmap(pm);
+    ui->image_label->setScaledContents(true);
 
     ui->widget->addGraph();
     ui->widget->graph(0)->setPen(QPen(QColor(0, 191, 255), 3));
@@ -99,6 +110,9 @@ void MainWindow::on_pushButton_2_clicked()
     w2 = ui->w2->text().toDouble();
     k1 = ui->k1->text().toDouble();
     k2 = ui->k2->text().toDouble();
+    A = ui->A_le->text().toDouble();
+    //A1 = ui->A1->text().toDouble();
+    //A2 = ui->A2->text().toDouble();
 
     ui->widget->graph(0)->data()->clear();
     ui->widget->graph(1)->data()->clear();
@@ -115,7 +129,6 @@ void MainWindow::on_pushButton_2_clicked()
     waves.push_back(test_wave_2);
     my_timer.restart();
     timer_plot.start(1);
-
 }
 
 void MainWindow::realtimePlot()
@@ -218,7 +231,7 @@ double MainWindow::wave_pkg(double X, double T)
 double MainWindow::true_wave_pkg(double X, double T)
 {
     int size = waves.size();
-    double amp[size], frq[size], phs[size],k[size];
+    double amp[size], frq[size], phs[size], k[size];
     double result;
     int i=0;
     for (auto& iterator : waves) {
@@ -229,7 +242,7 @@ double MainWindow::true_wave_pkg(double X, double T)
         i++;
     }
 
-    result = 2*amp[0]*cos((frq[0]-frq[1])*T/2 - (k[0]-k[1])*X/2);
+    result = (amp[0]+amp[1])*cos((frq[0]-frq[1])*T/2 - (k[0]-k[1])*X/2);
     return result;
 }
 
@@ -237,7 +250,7 @@ void MainWindow::on_pushButton_3_clicked()
 {
     if (timer_plot.isActive()) {
         timer_plot.stop();
-        pause_duration+= my_timer.elapsed()/1000.0;
+        pause_duration += my_timer.elapsed()/1000.0;
     }
     else {
         my_timer.restart();
